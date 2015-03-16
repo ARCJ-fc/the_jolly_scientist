@@ -19,8 +19,8 @@ server.register([require('bell'), require('hapi-auth-cookie')], function (err) {
     server.auth.strategy('twitter', 'bell', {
         provider: 'twitter',
         password: 'cookie_encryption_password',
-        clientId: 'nytgRLiSGhAxN7VRqZDeSwDKz',
-        clientSecret: 'wKCkgHUp6XjJokldjUJ9ATu5pnFzCschzCyJ9WTYNojuKzFuRl',
+        clientId: '',
+        clientSecret: '',
         isSecure: false //look into this, not a good idea but required if not using HTTPS
     });
 
