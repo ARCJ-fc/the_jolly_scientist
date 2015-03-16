@@ -16,4 +16,12 @@ server.route({
 	}
 });
 
+server.route({
+    path: "/users",
+    method: "GET",
+    handler: function(request, reply) {
+        reply();
+    }
+});
+
 module.exports = server;
