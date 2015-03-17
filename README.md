@@ -1,4 +1,10 @@
-# mad_scientist
+# the_jolly_scientist
+
+An even simpler blog for even simpler people.
+Notes soon to come
+---
+---
+##Notes for the mad_scientist setup below
 A basic hapi-lab-gulp setup for starting a project.
 
 ## Installation:
