@@ -34,9 +34,8 @@ server.route({
 			var theRealID = JSON.parse(contents).users.filter(function(ele) {
 				return ele.name === request.params.id;
 			})[0];
-			console.log(reply);
 			if (theRealID !== undefined) return reply(theRealID);
-			else return reply("That's not a real person.").statusCode(404);
+			else return reply("That's not a real person.").code(201);
 		});
 	}
 });
