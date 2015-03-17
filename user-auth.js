@@ -6,9 +6,9 @@ var server = new Hapi.Server();
 
 var nav = '<nav><a href="/">Home</a> <a href="/session">Session</a> <a href="/hi">Hi</a> <a href="/login">Log in</a> <a href="/logout">Log out</a></nav>';
 
-server.connection({ 
+server.connection({
     host: 'localhost',
-    port: 8000 
+    port: 8000
 });
 
 server.register([require('bell'), require('hapi-auth-cookie')], function (err) {

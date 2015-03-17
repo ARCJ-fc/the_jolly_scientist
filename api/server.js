@@ -1,4 +1,5 @@
 var Hapi 	= require("hapi");
+var fs 		= require("fs");
 var server 	= new Hapi.Server();
 
 /* $lab:coverage:off$ */
@@ -20,7 +21,7 @@ server.route({
     path: "/users",
     method: "GET",
     handler: function(request, reply) {
-        reply();
+    	reply.file(__dirname + "/../assets/users.json");
     }
 });
 
