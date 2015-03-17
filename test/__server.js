@@ -23,14 +23,15 @@ lab.experiment("A basic server test: ", function() {
 });
 
 
-lab.experiment("JSON tests: ", function() {
-
-    var options = {
-		url: "/users",
-		method: "GET"
-	};
+lab.experiment("JSON users tests: ", function() {
 
     lab.test("the /users endpoint", function(done) {
+
+	    var options = {
+			url: "/users",
+			method: "GET"
+		};
+
         server.inject(options, function(response) {
 
         	var resJSON = JSON.parse(response.result);
@@ -50,5 +51,18 @@ lab.experiment("JSON tests: ", function() {
 
         });
     });
+
+    lab.test("the /users/{id} endpoint", function(end) {
+
+    	var options = {
+    		url: "/users/timmy",
+    		method: "GET"
+    	};
+
+    	server.inject(options, function(response) {
+    		assert.equal(response.statusCode, 200, "should return a status code of 200");
+    	});
+    });
+
 });
 
