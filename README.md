@@ -2,12 +2,13 @@
 
 An even simpler blog for even simpler people.
 Notes soon to come
+
 ---
 ---
-##Notes for the mad_scientist setup below
+####Notes for the mad_scientist setup below
 A basic hapi-lab-gulp setup for starting a project.
 
-## Installation:
+#### Installation:
 
 Either **clone** this directory and simply 
 1. npm install
