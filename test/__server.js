@@ -2,6 +2,7 @@ var lab 	= exports.lab = require("lab").script();
 var assert 	= require("chai").assert;
 var fs 		= require("fs");
 var server 	= require("../api/server.js");
+var root	= (__dirname + "/../");
 
 
 lab.experiment("A basic server test: ", function() {
@@ -25,7 +26,7 @@ lab.experiment("A basic server test: ", function() {
 
 lab.experiment("JSON users tests: ", function() {
 
-    var origFile = fs.readFileSync(__dirname + "/../assets/users.json");
+    var origFile = fs.readFileSync(root + "assets/users.json");
     var origJSON = JSON.parse(origFile);
 
     lab.test("the /users endpoint", function(done) {
@@ -51,7 +52,7 @@ lab.experiment("JSON users tests: ", function() {
 
     lab.test("the /users/{id} endpoint", function(done) {
 
-    	var user 		= "Rory Segway";
+    	var user 		= "Rozza";
     	var origUsers 	= origJSON.users;
     	var options 	= {
     		url: "/users/" + user,
@@ -59,15 +60,24 @@ lab.experiment("JSON users tests: ", function() {
     	};
 
     	server.inject(options, function(response) {
-
-    		var resJSON  = JSON.parse(response.result);
+    		var resJSON  = response.result;
     		var timmyObj = origUsers.filter(function(ele, ind) {
     			return ele.name === user;
     		})[0];
 
     		assert.equal(response.statusCode, 200, "should return a status code of 200");
-    		assert.deepEqual(origJSON.users[0], resJSON[0], "should return the same user object as was requested");
-    		done();
+    		assert.deepEqual(timmyObj, resJSON, "should return the same user object as was requested if they exist");
+
+    	});
+
+    	options = {
+    		url: "/users/billie",
+    		method: "GET"
+    	};
+
+    	server.inject(options, function(response) {
+			assert.equal(response.statusCode, 404, "should return a status code of 404 for a nonexistent user");
+			done();
     	});
     });
 });

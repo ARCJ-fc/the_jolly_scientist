@@ -1,6 +1,7 @@
 var Hapi 	= require("hapi");
 var fs 		= require("fs");
 var server 	= new Hapi.Server();
+var root 	= __dirname + "/../";
 
 /* $lab:coverage:off$ */
 server.connection({
@@ -21,8 +22,23 @@ server.route({
     path: "/users",
     method: "GET",
     handler: function(request, reply) {
-    	reply.file(__dirname + "/../assets/users.json");
+    	reply.file(root + "assets/users.json");
     }
+});
+
+server.route({
+	path: "/users/{id}",
+	method: "GET",
+	handler: function(request, reply) {
+		fs.readFile(root + "assets/users.json", function(err, contents) {
+			var theRealID = JSON.parse(contents).users.filter(function(ele) {
+				return ele.name === request.params.id;
+			})[0];
+			console.log(reply);
+			if (theRealID !== undefined) return reply(theRealID);
+			else return reply("That's not a real person.").statusCode(404);
+		});
+	}
 });
 
 module.exports = server;
