@@ -3,12 +3,26 @@ var fs 		= require("fs");
 var server 	= new Hapi.Server();
 var root 	= __dirname + "/../";
 
+var dbOpts = {
+    url : "mongodb://arcj:mongolab2@ds039211.mongolab.com:39211/hapiblog"
+};
+
 /* $lab:coverage:off$ */
 server.connection({
 	host: "localhost",
 	port: process.env.PORT || 8080
 });
 /* $lab:coverage:on$ */
+
+server.register({
+    register: require("hapi-mongodb"),
+    options: dbOpts
+}, function (err) {
+    if (err) {
+        console.error(err);
+        throw err;
+    }
+});
 
 server.route({
 	path: "/",
@@ -22,7 +36,25 @@ server.route({
     path: "/users",
     method: "GET",
     handler: function(request, reply) {
-    	reply.file(root + "assets/users.json");
+        var db = request.server.plugins["hapi-mongodb"].db;
+        var ObjectID = request.server.plugins["hapi-mongodb"].ObjectID;
+
+        db.collection("users").find().toArray(function(err, doc) {
+            if (err) return reply(err);
+            reply(doc);
+        });
+    }
+});
+
+server.route({
+    path: "/users",
+    method: "POST",
+    handler: function(request, reply) {
+        // console.log(request);
+        fs.write(root + "assets/users.json", request.payload, null, function(err, written) {
+            if (err) return console.error(err);
+            return reply(request.payload).code(201);
+        });
     }
 });
 
@@ -34,9 +66,8 @@ server.route({
 			var theRealID = JSON.parse(contents).users.filter(function(ele) {
 				return ele.name === request.params.id;
 			})[0];
-			console.log(reply);
 			if (theRealID !== undefined) return reply(theRealID);
-			else return reply("That's not a real person.").statusCode(404);
+			else return reply("That's not a real person.").code(404);
 		});
 	}
 });

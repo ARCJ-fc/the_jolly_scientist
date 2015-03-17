@@ -29,7 +29,7 @@ lab.experiment("JSON users tests: ", function() {
     var origFile = fs.readFileSync(root + "assets/users.json");
     var origJSON = JSON.parse(origFile);
 
-    lab.test("the /users endpoint", function(done) {
+    lab.test("GETting the /users endpoint", function(done) {
 
 	    var options = {
 			url: "/users",
@@ -50,9 +50,28 @@ lab.experiment("JSON users tests: ", function() {
 
         });
 
+    lab.test("POSTing to the /users endpoint", function(done) {
+
+        var options = {
+            url: "/users",
+            method: "POST",
+            payload: {
+                name    : "bob",
+                username: "thebuilder101",
+                password: "il0vek4t13pr1c3",
+                email   : "builderscraic@yahoo.com"
+            }
+        };
+
+        server.inject(options, function(response) {
+            assert.equal(response.statusCode, 201, "should return a status code of 201");
+            done();
+        });
+    });
+
     lab.test("the /users/{id} endpoint", function(done) {
 
-    	var user 		= "Rozza";
+    	var user 		= "Rory";
     	var origUsers 	= origJSON.users;
     	var options 	= {
     		url: "/users/" + user,
