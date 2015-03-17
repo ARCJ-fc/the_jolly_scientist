@@ -2,6 +2,7 @@
   "name": "testes",
   "version": "1.0.0",
   "description": "a basic setup for hapi/lab/gulp",
+  "repository": "https://github.com/ARCJ-fc/the_jolly_scientist.git",
   "main": "server.js",
   "scripts": {
     "test": "./node_modules/lab/bin/lab -c -v"
