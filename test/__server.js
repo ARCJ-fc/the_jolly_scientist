@@ -25,6 +25,9 @@ lab.experiment("A basic server test: ", function() {
 
 lab.experiment("JSON users tests: ", function() {
 
+    var origFile = fs.readFileSync(__dirname + "/../assets/users.json");
+    var origJSON = JSON.parse(origFile);
+
     lab.test("the /users endpoint", function(done) {
 
 	    var options = {
@@ -40,29 +43,32 @@ lab.experiment("JSON users tests: ", function() {
             assert.include(response.headers["content-type"], "application/json", "should return a json content-type");
             assert.isObject(resJSON, "should return a JSON object");
             assert.isArray(resJSON.users, "should contain a users array");
-
-            fs.readFile(__dirname + "/../assets/users.json", function(err, contents) {
-            	var origJSON = JSON.parse(contents);
-
-            	assert.isNull(err, "doesn't throw an error");
-            	assert.deepEqual(origJSON, resJSON, "testing is cool");
-            	done();
+        	assert.deepEqual(origJSON, resJSON, "testing is cool");
+        	done();
             });
 
         });
-    });
 
-    lab.test("the /users/{id} endpoint", function(end) {
+    lab.test("the /users/{id} endpoint", function(done) {
 
-    	var options = {
-    		url: "/users/timmy",
+    	var user 		= "Rory Segway";
+    	var origUsers 	= origJSON.users;
+    	var options 	= {
+    		url: "/users/" + user,
     		method: "GET"
     	};
 
     	server.inject(options, function(response) {
+
+    		var resJSON  = JSON.parse(response.result);
+    		var timmyObj = origUsers.filter(function(ele, ind) {
+    			return ele.name === user;
+    		})[0];
+
     		assert.equal(response.statusCode, 200, "should return a status code of 200");
+    		assert.deepEqual(origJSON.users[0], resJSON[0], "should return the same user object as was requested");
+    		done();
     	});
     });
-
 });
 
