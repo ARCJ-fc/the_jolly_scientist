@@ -3,7 +3,7 @@ A basic hapi-lab-gulp setup for starting a project.
 
 ##Installation:
 
-Either **clone** this directory and simply 
+Either **clone** this directory and simply
 1. npm install
 2. npm install gulp lab -g
 
@@ -43,7 +43,7 @@ lab.experiment("My blah blah: ", function() {
   });
 });
 ```
-The aim here is to write a failing test, but one that you wish to pass. A simple example is writing a test for a 200 Status Code response to a "/" GET request. Once the test is failing, write code incrementally to make it pass, then write another failing test. The goal is to have as short feedback loops as possible, and to generate sufficiently robust code such that you don't need to worry about building on it or adding to it later. If your tests are failing, it means you are allowed to write more code. However, they should be failing for the right reason (there being some mismatch between code-intention and code-implementation, rather than a random error that the tests have picked up but you haven't fixed yet). Having a rock-solid codebase gives you more freedom, and the necessary planning that comes with writing tests first will give you a more robust knowledge of both your code and the project as a whole. Ultimately, this allows for more creativity.     
+The aim here is to write a failing test, but one that you wish to pass. A simple example is writing a test for a 200 Status Code response to a "/" GET request. Once the test is failing, write code incrementally to make it pass, then write another failing test. The goal is to have as short feedback loops as possible, and to generate sufficiently robust code such that you don't need to worry about building on it or adding to it later. If your tests are failing, it means you are allowed to write more code. However, they should be failing for the right reason (there being some mismatch between code-intention and code-implementation, rather than a random error that the tests have picked up but you haven't fixed yet). Having a rock-solid codebase gives you more freedom, and the necessary planning that comes with writing tests first will give you a more robust knowledge of both your code and the project as a whole. Ultimately, this allows for more creativity.
 
 As a further note, if you can't think of how to test something, then you're probably trying to do something too complicated in one go. "Untestable" code often is just a weak way of describing code that tries to do too much all at once, and tightly couples things that shouldn't be so tightly coupled.
 
@@ -65,6 +65,6 @@ We use gulp-lab to facilitate easy gulp interaction with our lab tests.
 
 
 ##Useful links
-- http://chaijs.com/ 
+- http://chaijs.com/
 - http://codepipet.com/blog/hapi-testing-simplified-using-lab/
 - https://medium.com/the-spumko-suite/testing-hapi-services-with-lab-96ac463c490a

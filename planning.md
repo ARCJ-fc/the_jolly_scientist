@@ -3,7 +3,7 @@
 
 /posts --> GET, POST
 .../{month} --> GET
-.../.../{id} --> GET, PUT, DELETE  
+.../.../{id} --> GET, PUT, DELETE
 ---
 /login --> GET, POST
 ---
