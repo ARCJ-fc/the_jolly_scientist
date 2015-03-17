@@ -36,13 +36,14 @@ server.route({
     path: "/users",
     method: "GET",
     handler: function(request, reply) {
-        var db = request.server.plugins["hapi-mongodb"].db;
-        var ObjectID = request.server.plugins["hapi-mongodb"].ObjectID;
+        // var db = request.server.plugins["hapi-mongodb"].db;
+        console.log("Where is the database?", request.server.plugins.Db);
+        // var ObjectID = request.server.plugins["hapi-mongodb"].ObjectID;
 
-        db.collection("users").find().toArray(function(err, doc) {
-            if (err) return reply(err);
-            reply(doc);
-        });
+        // db.collection("users").find().toArray(function(err, doc) {
+        //     if (err) return reply(err);
+        //     reply(doc);
+        // });
     }
 });
 
@@ -50,7 +51,6 @@ server.route({
     path: "/users",
     method: "POST",
     handler: function(request, reply) {
-        // console.log(request);
         fs.write(root + "assets/users.json", request.payload, null, function(err, written) {
             if (err) return console.error(err);
             return reply(request.payload).code(201);
