@@ -24,6 +24,21 @@ var myArray = [
 }
 ];
 
+var myPosts = [
+{
+	title: "My First Blog Post",
+	content: "blah blah blah blah",
+	date: "25/12/1861",
+	author: "bigboy1101"
+},
+{
+	title: "My Second Blog Post",
+	content: "blahde blahde blahde blah",
+	date: "25/12/1861",
+	author: "poland999"
+},
+];
+
 lab.experiment("A basic server test: ", function() {
 
 	var options = {
@@ -167,7 +182,7 @@ lab.experiment("The users/{username} endpoint: ", function() {
 		};
 
 		server.inject(options, function(response) {
-			assert.equal(response.statusCode, 200, "should return a 404 status code");
+			assert.equal(response.statusCode, 404, "should return a 404 status code");
 			done();
 		});
 	});
@@ -274,4 +289,133 @@ lab.experiment("The users/{username} endpoint: ", function() {
 	// 	});
 	// });
 
+	lab.test("Sending a good DELETE request", function(done) {
+
+		var options = {
+			url: "/users/bigboy1101",
+			method: "DELETE"
+		};
+
+		server.inject(options, function(response) {
+			assert.equal(response.statusCode, 200, "should return a 200 status code");
+			assert.include(response.payload, "bigboy1101", "should return a response informing us of the resource location");
+			assert.include(response.payload, "deleted", "should return a response informing us of the successful deletion");
+			assert.notInclude(response.payload, "frenchboy1001", "should return a response informing us of the successful deletion with adequate precision");
+			done();
+		});
+	});
+
+	lab.test("Sending a bad DELETE request", function(done) {
+
+		var options = {
+			url: "/users/rotundturnip007",
+			method: "DELETE"
+		};
+
+		server.inject(options, function(response) {
+			assert.equal(response.statusCode, 404, "should return a 404 status code");
+			done();
+		});
+	});
+});
+
+// *********************** /posts
+lab.experiment("The posts endpoint: ", function() {
+
+	lab.test("Sending a GET request", function(done) {
+
+		var options = {
+			url: "/posts",
+			method: "GET"
+		};
+
+		server.inject(options, function(response) {
+			assert.equal(response.statusCode, 200, "should return a 200 status code");
+			assert.isArray(response.result, "should return an array");
+			assert.deepEqual(response.result, myPosts, "with the same contents as myPosts");
+			done();
+		});
+	});
+
+	lab.test("Sending a POST request with good data", function(done) {
+
+		var options = {
+			url: "/posts",
+			method: "POST",
+			payload: {
+				title: "Timmy Goes to Town",
+				content: "aaa timmy filler 1 filler 2 filler 3 filler 4 filler 5 filler 6 filler 7",
+				date: "25/12/1861",
+				author: "tinytim101"
+			}
+		};
+
+		server.inject(options, function(response) {
+			assert.equal(response.statusCode, 201, "should return a created status code");
+			assert.deepEqual(JSON.parse(response.payload), options.payload, "should return the data used to create the entry");
+			done();
+		});
+	});
+
+	lab.test("Sending a POST request with bad info", function(done) {
+
+		var options = {
+			url: "/posts",
+			method: "POST",
+			payload: {
+				author: "timmy &&&",
+			}
+		};
+
+		server.inject(options, function(response) {
+			assert.equal(response.statusCode, 400, "should return a bad request status code");
+			assert.notDeepEqual(JSON.parse(response.payload), options.payload, "should not return the request object");
+			assert.isString(response.payload, "should return a response with a string error message");
+			done();
+		});
+	});
+
+	lab.test("Attempting to create a post with an already-in-use title", function(done) {
+
+		var options = {
+			url: "/posts",
+			method: "POST",
+			payload: {
+				title: "My First Blog Post",
+				content: "hum diddley dum",
+				date: "25/12/1861",
+				author: "bigboy1101"
+			}
+		};
+
+		server.inject(options, function(response) {
+			assert.equal(response.statusCode, 400, "should return a bad request status code");
+			assert.isString(response.payload, "should return a response with a string error message");
+			assert.include(response.payload, "title", "should return a response informing us of the problem");
+			assert.notInclude(response.payload, "content", "should return a response informing us of the problem with reasonable specificity");
+			done();
+		});
+	});
+
+	lab.test("Attempting to create a post with content already-in-use", function(done) {
+
+		var options = {
+			url: "/posts",
+			method: "POST",
+			payload: {
+				title: "My Thirsty Blog Post",
+				content: "blah blah blah blah",
+				date: "25/12/1861",
+				author: "bigboy1101"
+			}
+		};
+
+		server.inject(options, function(response) {
+			assert.equal(response.statusCode, 400, "should return a bad request status code");
+			assert.isString(response.payload, "should return a response with a string error message");
+			assert.include(response.payload, "content", "should return a response informing us of the problem");
+			assert.notInclude(response.payload, "title", "should return a response informing us of the problem with reasonable specificity");
+			done();
+		});
+	});
 });

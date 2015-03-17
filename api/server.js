@@ -24,6 +24,21 @@ var myArray = [
 }
 ];
 
+var myPosts = [
+{
+	title: "My First Blog Post",
+	content: "blah blah blah blah",
+	date: "25/12/1861",
+	author: "bigboy1101"
+},
+{
+	title: "My Second Blog Post",
+	content: "blahde blahde blahde blah",
+	date: "25/12/1861",
+	author: "poland999"
+},
+];
+
 /* $lab:coverage:off$ */
 server.connection({
 	host: "localhost",
@@ -32,6 +47,7 @@ server.connection({
 /* $lab:coverage:on$ */
 
 
+// *********************** /home
 server.route({
 	path: "/",
 	method: "GET",
@@ -39,10 +55,10 @@ server.route({
 		reply("Hi m8");
 	}
 });
+// -----------------------
 
 
 // *********************** /users
-
 server.route({
     path: "/users",
     method: "GET",
@@ -75,17 +91,19 @@ server.route({
     	}
     }
 });
+// -----------------------
+
 
 // *********************** /users/{username}
-
 server.route({
 	path: "/users/{username}",
 	method: "GET",
 	handler: function(request, reply) {
 		var result = myArray.filter(function(ele, ind) {
 			return request.params.username === ele.username;
-		})[0];
-		reply(result);
+		});
+		if (result.length !== 0) return reply(result[0]);
+		else return reply("User not found").code(404);
 	}
 });
 
@@ -125,10 +143,62 @@ server.route({
     }
 });
 
+server.route({
+	path: "/users/{username}",
+	method: "DELETE",
+	handler: function(request, reply) {
+		var result = [];
+		myArray.forEach(function(ele) {
+			if (request.params.username !== ele.username) {
+				result.push(ele);
+			}
+			return false;
+		});
+		if (result.length !== myArray.length) {myArray = result; return reply(request.params.username + " has successfully been deleted!").code(200);}
+		else {return reply("User not found").code(404);}
+	}
+});
+// -----------------------
 
 
+// *********************** /posts
+server.route({
+    path: "/posts",
+    method: "GET",
+    handler: function(request, reply) {
+    	reply(myPosts);
+    }
+});
+
+server.route({
+    path: "/posts",
+    method: "POST",
+    handler: function(request, reply) {
+    	if (myPosts.filter(function(ele) {
+    		if (ele.title === request.payload.title) return reply("That title is already in use").code(400);
+    		else if (ele.content === request.payload.content) return reply("That content is has already been submitted!").code(400);
+    	}).length) {
+    		return false;
+    	}
+    	myPosts.push(request.payload);
+        return reply(request.payload).code(201);
+    },
+    config: {
+    	validate: {
+    		payload: Joi.object({
+    			title: Joi.string().min(2).max(40).required(),
+    			content: Joi.string().min(10).max(1000).required(),
+    			date: Joi.date().format('DD/MM/YYYY').required(),
+    			author: Joi.string().alphanum().required()
+    		}).options({allowUnknown: true})
+    	}
+    }
+});
+
+// -----------------------
 
 
+// *********************** /posts/{posttitle}
 
 
 
