@@ -223,13 +223,6 @@ lab.experiment("The users/{username} endpoint: ", function() {
 			}
 		};
 
-		var newUser = {
-				name: "piedre",
-				username: "poland999",
-				password: "likeburgers",
-				email: "comeonthegunners@pub.com"
-		};
-
 		server.inject(options, function(response) {
 			assert.equal(response.statusCode, 400, "should return a 400 status code");
 			assert.isObject(JSON.parse(response.payload), "should return an error object response");
@@ -337,7 +330,7 @@ lab.experiment("The posts endpoint: ", function() {
 		});
 	});
 
-	lab.test("Sending a POST request with good data", function(done) {
+	lab.test("Sending a POST request with good info", function(done) {
 
 		var options = {
 			url: "/posts",
@@ -419,3 +412,111 @@ lab.experiment("The posts endpoint: ", function() {
 		});
 	});
 });
+
+// *********************** /posts/{posttitle}
+lab.experiment("The posts/{posttitle} endpoint: ", function() {
+
+	lab.test("Sending a good GET request", function(done) {
+
+		var options = {
+			url: "/posts/My%20First%20Blog%20Post",
+			method: "GET"
+		};
+
+		server.inject(options, function(response) {
+			assert.equal(response.statusCode, 200, "should return a 200 status code");
+			assert.isObject(response.result, "should return an object");
+			assert.deepEqual(response.result, myPosts[0], "with the same contents as the relevant post");
+			done();
+		});
+	});
+
+	lab.test("Sending a bad GET request", function(done) {
+
+		var options = {
+			url: "/posts/rotundturnip0007My%20First%20Blog%20Post",
+			method: "GET"
+		};
+
+		server.inject(options, function(response) {
+			assert.equal(response.statusCode, 404, "should return a 404 status code");
+			done();
+		});
+	});
+
+	lab.test("Sending a well located, good PUT request", function(done) {
+
+		var options = {
+			url: "/posts/My%20First%20Blog%20Post",
+			method: "PUT",
+			payload: {
+				author: "toasty",
+				title: "I Like Burdies"
+			}
+		};
+
+		var newPost = {
+			title: "I Like Burdies",
+			content: "blah blah blah blah",
+			date: "25/12/1861",
+			author: "toasty"
+		};
+
+		server.inject(options, function(response) {
+			assert.equal(response.statusCode, 200, "should return a 200 status code");
+			assert.isObject(JSON.parse(response.payload), "should return an object response");
+			assert.deepEqual(JSON.parse(response.payload), newPost, "should return the updated resource");
+			done();
+		});
+	});
+
+	lab.test("Sending a well located, bad PUT request", function(done) {
+
+		var options = {
+			url: "/posts/My%20First%20Blog%20Post",
+			method: "PUT",
+			payload: {
+				author: "t  @%@oasty"
+			}
+		};
+
+		server.inject(options, function(response) {
+			assert.equal(response.statusCode, 400, "should return a 400 status code");
+			assert.isObject(JSON.parse(response.payload), "should return an error object response");
+			assert.include(JSON.parse(response.payload).message, "author", "should return a response informing us of the problem");
+			assert.notInclude(JSON.parse(response.payload).message, ["content", "title", "date"], "should return a response informing us of the problem with reasonable specificity");
+			done();
+		});
+	});
+
+	lab.test("Sending a good DELETE request", function(done) {
+
+		var options = {
+			url: "/posts/My%20Second%20Blog%20Post",
+			method: "DELETE"
+		};
+
+		server.inject(options, function(response) {
+			assert.equal(response.statusCode, 200, "should return a 200 status code");
+			assert.include(response.payload, "My Second Blog Post", "should return a response informing us of the resource location");
+			assert.include(response.payload, "deleted", "should return a response informing us of the successful deletion");
+			assert.notInclude(response.payload, "I Like Burdies", "should return a response informing us of the successful deletion with adequate precision");
+			done();
+		});
+	});
+
+	lab.test("Sending a bad DELETE request", function(done) {
+
+		var options = {
+			url: "/posts/rotundturnip0007My%20First%20Blog%20Post",
+			method: "DELETE"
+		};
+
+		server.inject(options, function(response) {
+			assert.equal(response.statusCode, 404, "should return a 404 status code");
+			done();
+		});
+	});
+});
+
+// -----------------------
