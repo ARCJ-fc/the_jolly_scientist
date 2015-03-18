@@ -1,5 +1,7 @@
 var Hapi 	= require("hapi");
 var Joi 	= require("joi");
+var Bell    = require("bell");
+var HAC     = require("hapi-auth-cookie");
 var server 	= new Hapi.Server();
 var root 	= __dirname + "/../";
 
@@ -256,5 +258,37 @@ server.route({
 		else {return reply("Post not found").code(404);}
 	}
 });
+// -----------------------
+
+// *********************** /login
+server.register([Bell, HAC], function(err) {
+    if (err) throw error;
+
+    server.auth.strategy("session", "cookie", {
+        password: "arcjrdabest",
+        cookie: "arcjcookie",
+        redirectTo: "/login",
+        redirectOnTry: false,
+        isSecure: false
+    });
+});
+
+server.route({
+    path: "/login",
+    method: "GET",
+    handler: function(request, reply) {
+        if (request.auth.isAuthenticated) return reply.redirect("/");
+        return reply("<form method='POST'>Username: <input id='username' type='text' >Password: <input id='password' type='text' > <input type='submit' ></form>");
+    }
+});
+
+server.route({
+    path: "/login",
+    method: "POST",
+    handler: function(request, reply) {
+
+    }
+});
+
 
 module.exports = server;
