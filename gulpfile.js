@@ -3,7 +3,7 @@ var lab 	= require("gulp-lab");
 
 gulp.task("lab", function (){
     return gulp.src("test/*.js")
-      .pipe(lab(["-v", "-c", "-l"])); //-v shows all the passed tests as well as failed ones, -l hides global variable leaks, -c test coverage
+      .pipe(lab(["-v", "-c"])); //-v shows all the passed tests as well as failed ones, -l hides global variable leaks, -c test coverage
 });
 
 gulp.task("watch-lab", function() {
