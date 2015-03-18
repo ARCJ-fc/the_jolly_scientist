@@ -87,7 +87,7 @@ server.route({
     			username: Joi.string().alphanum().min(3).max(20).required(),
     			password: Joi.string().alphanum().min(5).max(40).required(),
     			email: Joi.string().email().required()
-    		}).options({allowUnknown: true})
+    		})
     	}
     }
 });
@@ -137,7 +137,7 @@ server.route({
     			username: Joi.string().alphanum().min(3).max(20),
     			password: Joi.string().alphanum().min(5).max(40),
     			email: Joi.string().email()
-    		}).options({allowUnknown: false})
+    		})
     		.or("name", "username", "password", "email")
     	}
     }
@@ -188,18 +188,73 @@ server.route({
     		payload: Joi.object({
     			title: Joi.string().min(2).max(40).required(),
     			content: Joi.string().min(10).max(1000).required(),
-    			date: Joi.date().format('DD/MM/YYYY').required(),
+    			date: Joi.string().required(), // TO BE DATE
     			author: Joi.string().alphanum().required()
-    		}).options({allowUnknown: true})
+    		})
     	}
     }
 });
 
 // -----------------------
 
-
 // *********************** /posts/{posttitle}
+server.route({
+	path: "/posts/{title}",
+	method: "GET",
+	handler: function(request, reply) {
+		var result = myPosts.filter(function(ele, ind) {
+			return request.params.title === ele.title;
+		});
+		if (result.length !== 0) return reply(result[0]);
+		else return reply("Post not found").code(404);
+	}
+});
 
+server.route({
+	path: "/posts/{title}",
+	method: "PUT",
+	handler: function(request, reply) {
+		var updateKeys = Object.keys(request.payload);
+		var updatedIndex;
 
+		myPosts = myPosts.map(function(updateEle, ind) {
+			if (request.params.title === updateEle.title) {
+				updatedIndex = ind;
+				updateKeys.forEach(function(keysEle) {
+					updateEle[keysEle] = request.payload[keysEle];
+				});
+			}
+			return updateEle;
+		});
+		reply(myPosts[updatedIndex]);
+		// NOTES - SEE ABOVE NOTE
+	},
+    config: {
+    	validate: {
+    		payload: Joi.object({
+    			title: Joi.string().min(2).max(40),
+    			content: Joi.string().min(10).max(1000),
+    			date: Joi.string(), // TO BE DATE
+    			author: Joi.string().alphanum()
+    		})
+    	}
+    }
+});
+
+server.route({
+	path: "/posts/{title}",
+	method: "DELETE",
+	handler: function(request, reply) {
+		var result = [];
+		myPosts.forEach(function(ele) {
+			if (request.params.title !== ele.title) {
+				result.push(ele);
+			}
+			return false;
+		});
+		if (result.length !== myPosts.length) {myPosts = result; return reply(request.params.title + " has successfully been deleted!").code(200);}
+		else {return reply("Post not found").code(404);}
+	}
+});
 
 module.exports = server;
