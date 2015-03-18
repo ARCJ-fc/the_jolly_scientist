@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "hapi": "^8.4.0",
-    "hapi-mongodb": "^2.3.0"
+    "hapi-mongodb": "^2.3.0",
+    "joi": "^6.0.8"
   }
 }
