@@ -1,5 +1,5 @@
 var mongoose = require("mongoose");
-var Schema   = mongoose.schema;
+var Schema   = mongoose.Schema;
 var bcrypt   = require('bcrypt');
 var SALT_WORK_FACTOR = 10;
 
@@ -26,7 +26,7 @@ Post.methods.savePost = function(requestData, callback){
         created: new Date(),
         updated: new Date()
     };
-    
+
     var post = new this(newPost);
     post.save(callback);
 };
@@ -50,17 +50,17 @@ Post.method.deletePost = function(post, callback) {
 
 User.pre('save', function(next){
     var user = this;
-    
+
     if (!user.isModified('password')) return next();
-    
+
     //make it salty ;)
     bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt){
         if (err) return next(err);
-        
+
         //get hashing
         bcrypt.hash(user.password, salt, function(err, hash){
             if (err) return next(err);
-            
+
             user.password = hash;
             next();
         });
@@ -86,12 +86,12 @@ testUser.save(function(err){
 
 User.findOne({ username: "arcj"}, function(err, user){
     if (err) throw err;
-    
+
     user.comparePassword('we-are-arcj', function(err, isMatch){
         if (err) throw err;
         console.log("we-are-arcj:", isMatch);
     });
-    
+
     user.comparePassword("we-are-fac4", function(err, isMatch){
         if (err) throw err;
         console.log("we-are-fac4:", isMatch);

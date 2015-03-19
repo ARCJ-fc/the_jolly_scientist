@@ -25,7 +25,7 @@ exports.login = {
             email: g.profile.email,
             picture: g.profile.raw.picture,
             gender: g.profile.raw.gender
-        }
+        };
         request.auth.session.set(profile);
     	return reply.redirect("/");
 	}
@@ -43,7 +43,10 @@ exports.logout = {
 
 exports.getPosts = {
 	handler: function(request, reply) {
-		reply("getPosts");
+		Post.find({}, function(err, post) {
+			if (err) return handleError(err);
+			return reply(post);
+		});
 	}
 };
 
@@ -110,7 +113,7 @@ exports.createUser = {
 		reply("createUser");
 	},
 	validate: {
-		payload: Joi.object({ 
+		payload: Joi.object({
 			description: Joi.string()
 		})
 	}
