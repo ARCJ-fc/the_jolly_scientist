@@ -1,5 +1,5 @@
 var mongoose = require("mongoose");
-var Schema   = mongoose.schema;
+var Schema   = mongoose.Schema;
 
 var User = new Schema({
     Username    : { type: String, unique: true },
@@ -24,7 +24,7 @@ Post.methods.savePost = function(requestData, callback){
         created: new Date(),
         updated: new Date()
     };
-    
+
     var post = new this(newPost);
     post.save(callback);
 };
