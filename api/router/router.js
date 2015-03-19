@@ -15,8 +15,9 @@ module.exports = [
 	{path: "/users", 			method: "GET", 		config: controller.getUsers},
 	{path: "/users", 			method: "POST", 	config: controller.createUser},
 
-	{path: "/users/{id}", 		method: "GET", 		config: controller.getSingleUser},
-	{path: "/users/{id}", 		method: "PUT", 		config: controller.updateSingleUser},
-	{path: "/users/{id}", 		method: "DELETE", 	config: controller.deleteSingleUser}
+	{path: "/users/{name}", 	method: "GET", 		config: controller.getSingleUser},
+	{path: "/users/{name}", 	method: "PUT", 		config: controller.updateSingleUser},
+	{path: "/users/{name}", 	method: "DELETE", 	config: controller.deleteSingleUser},
 
+	{path: "/testposting",	 	method: "GET", 		config: controller.testPosting }
 ];
