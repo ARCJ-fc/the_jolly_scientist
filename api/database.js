@@ -1,11 +1,12 @@
 var Mongoose = require("mongoose");
-var config   = require("./config");
+var config   = require("./config").database;
 var uriUtil  = require("mongodb-uri");
 
-var mongodbUri = "mongodb://" + config.database.username + ":" + config.database.password + "@ds039211.mongolab.com:39211/hapiblog";
+var mongodbUri = "mongodb://" + config.username + ":" + config.password + "@" + config.host + ":" + config.port + "/" + config.db;
 var mongooseUri = uriUtil.formatMongoose(mongodbUri);
 
 Mongoose.connect(mongooseUri);
+
 var db = Mongoose.connection;
 
 db.on("error", console.error.bind(console, "connection error"));
