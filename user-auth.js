@@ -1,3 +1,4 @@
+//this file is not being used
 var Hapi = require('hapi');
 var Bell = require('bell');
 var Cookie = require('hapi-auth-cookie');
