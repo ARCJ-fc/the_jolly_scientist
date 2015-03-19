@@ -1,4 +1,5 @@
 var Joi 	= require("joi");
+var Bell 	= require("bell");
 var Boom 	= require("boom");
 var model 	= require("../models/model.js");
 
@@ -41,17 +42,18 @@ exports.getPosts = {
 };
 
 exports.createPost = {
-	auth: "cookie",
+	auth: "session",
 	handler: function(request, reply) {
-		Post.save(function(err, contents) {
-			if (err) {
-				if (err.code === 11000 || err.code === 11001) {
-                    return reply(Boom.forbidden("please provide another user email"));
-                }
-                return reply(Boom.forbidden(err));
-			}
-			return reply(contents).code(201);
-		});
+		// Post.save(function(err, contents) {
+		// 	if (err) {
+		// 		if (err.code === 11000 || err.code === 11001) {
+  //                   return reply(Boom.forbidden("please provide another user email"));
+  //               }
+  //               return reply(Boom.forbidden(err));
+		// 	}
+		// 	return reply(contents).code(201);
+		// })
+	reply("hi");
 	},
 	validate: {
 		payload: Joi.object({
@@ -70,7 +72,7 @@ exports.getSinglePost = {
 };
 
 exports.updateSinglePost = {
-	auth: "cookie",
+	auth: "session",
 	handler: function(request, reply) {
 		reply("updateSinglePost");
 	},
@@ -83,7 +85,7 @@ exports.updateSinglePost = {
 };
 
 exports.deleteSinglePost = {
-	auth: "cookie",
+	auth: "session",
 	handler: function(request, reply) {
 		reply("deleteSinglePost");
 	}
@@ -98,12 +100,14 @@ exports.getUsers = {
 };
 
 exports.createUser = {
-	auth: "cookie",
+	auth: "session",
 	handler: function(request, reply) {
 		reply("createUser");
 	},
 	validate: {
-		description: Joi.string()
+		payload: Joi.object({ 
+			description: Joi.string()
+		})
 	}
 };
 
@@ -111,12 +115,11 @@ exports.createUser = {
 
 exports.getSingleUser = {
 	handler: function(request, reply) {
-		reply("getSingleUser");
 	}
 };
 
 exports.updateSingleUser = {
-	auth: "cookie",
+	auth: "session",
 	handler: function(request, reply) {
 		reply("updateSingleUser");
 	},
@@ -128,7 +131,7 @@ exports.updateSingleUser = {
 };
 
 exports.deleteSingleUser = {
-	auth: "cookie",
+	auth: "session",
 	handler: function(request, reply) {
 		reply("deleteSingleUser");
 	}

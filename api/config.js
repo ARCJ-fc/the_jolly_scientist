@@ -1,5 +1,4 @@
-var mongoose = require("mongoose");
-var mongodburi = require("mongodb-uri");
+var credentials = require("./credentials.js");
 
 module.exports = {
     server: {
@@ -7,11 +6,11 @@ module.exports = {
         port: Number(process.env.port) || 8080
     },
     database: {
-        host: "127.0.0.1",
-        port: "27017",
-        db: "DatabaseName",
-        username: "",
-        password: ""
+        host: "ds039211.mongolab.com",
+        port: "39211",
+        db: "hapiblog",
+        username: "arcj",
+        password: "mongolab2"
     },
     session: {
         password: "arcjrdabest",
@@ -27,8 +26,7 @@ module.exports = {
         clientId: credentials.clientId,
         clientSecret: credentials.clientSecret,
         providerParams: {
-            redirect_uri: server.info.uri + "/login"
+            redirect_uri: "http://localhost:8080/login"
         }
     }
 };
-

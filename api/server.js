@@ -1,13 +1,14 @@
 var Hapi 	= require("hapi");
-var Bell 	= require("Bell");
+var Bell 	= require("bell");
 var cookie 	= require("hapi-auth-cookie");
-var routes 	= require("/router/router.js");
+var routes 	= require("./router/router.js");
 var config 	= require("./config");
-var Db 		= require("./database");
 
-var server 	= new Hapi.server(config.server.host, config.server.port, {cors: true});
+var server 	= new Hapi.Server();
 
-server.register([Bell, HAC], function(err) {
+server.connection(config.server);
+
+server.register([Bell, cookie], function(err) {
 	if (err) throw err;
 
 	server.auth.strategy("session", "cookie", config.session);
