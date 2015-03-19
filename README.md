@@ -15,6 +15,6 @@ node app.js
 
 To run the tests:
 ```
-npm instll lab -g
+npm install lab -g
 npm test
 ````
