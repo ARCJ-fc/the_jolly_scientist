@@ -6,7 +6,7 @@ var server = require("../api/server.js");
 
 lab.experiment("Authentication tests: ", function() {
 
-    lab.test("GETting to the login page ", function(done) {
+    lab.test("GETting to the login page if not already logged in ", function(done) {
 
         var options = {
             url: "/login",
@@ -15,9 +15,8 @@ lab.experiment("Authentication tests: ", function() {
 
         server.inject(options, function(response) {
 
-            assert.equal(response.statusCode, 200, "should return a status code of 200");
-            assert.include(response.headers["content-type"], "text/html", "should return an html page");
-            assert.include(response.payload, "<form", "should return a form html element");
+            assert.equal(response.statusCode, 302, "should return a status code of 302");
+            assert.include(response.headers.location, "google.com", "should redirect user to the google login page");
             done();
         });
     });
@@ -27,11 +26,10 @@ lab.experiment("Authentication tests: ", function() {
         var options = {
             url: "/login",
             method: "GET",
-            isAuthenticated: true
-            // credentials: {
-            //     username: "bigboy1101",
-            //     password: "teriyakichicken",
-            // }
+            credentials: {
+                firstName: "Roy",
+                image: "/assets/bigboyonthebeachwithbabes.png"
+            }
         };
 
         server.inject(options, function(response) {
@@ -40,20 +38,4 @@ lab.experiment("Authentication tests: ", function() {
             done();
         });
     });
-
-    // lab.test("POSTing to the login page with good information ", function(done) {
-
-    //     var options ={
-    //         url: "/login",
-    //         method: "POST",
-    //         payload: {username: "bigboy1101", password: "teriyakichickens"}
-    //     };
-
-    //     server.inject(options, function(response) {
-
-    //         assert.equal(response.statusCode, 303, "should return a status code of 303");
-    //         done();
-    //     });
-    // });
-
 });

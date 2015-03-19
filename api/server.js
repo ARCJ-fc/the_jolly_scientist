@@ -1,9 +1,10 @@
-var Hapi 	= require("hapi");
-var Joi 	= require("joi");
-var Bell    = require("bell");
-var HAC     = require("hapi-auth-cookie");
-var server 	= new Hapi.Server();
-var root 	= __dirname + "/../";
+var Hapi 		= require("hapi");
+var Joi 		= require("joi");
+var Bell    	= require("bell");
+var HAC     	= require("hapi-auth-cookie");
+var credentials = require("./credentials.js");
+var server 		= new Hapi.Server();
+var root 		= __dirname + "/../";
 
 var myArray = [
 {
@@ -260,10 +261,12 @@ server.route({
 });
 // -----------------------
 
+
 // *********************** /login
 server.register([Bell, HAC], function(err) {
-    if (err) throw error;
-
+	/* $lab:coverage:off$ */
+	if (err) throw err;
+	/* $lab:coverage:on$ */
     server.auth.strategy("session", "cookie", {
         password: "arcjrdabest",
         cookie: "arcjcookie",
@@ -271,22 +274,33 @@ server.register([Bell, HAC], function(err) {
         redirectOnTry: false,
         isSecure: false
     });
+
+    server.auth.strategy("google", "bell", {
+    	provider: "google",
+    	password: "justarandomstringissecure",
+    	isSecure: false,
+    	clientId: credentials.clientId,
+    	clientSecret: credentials.clientSecret,
+    	providerParams: {
+    		redirect_uri: server.info.uri + "/login"
+    	}
+    });
 });
 
 server.route({
     path: "/login",
     method: "GET",
+    config: {
+	    auth: {
+	        mode: 'try',
+	        strategy: 'google'
+	    }
+    },
     handler: function(request, reply) {
-        if (request.auth.isAuthenticated) return reply.redirect("/");
-        return reply("<form method='POST'>Username: <input id='username' type='text' >Password: <input id='password' type='text' > <input type='submit' ></form>");
-    }
-});
-
-server.route({
-    path: "/login",
-    method: "POST",
-    handler: function(request, reply) {
-
+        // if (request.auth.isAuthenticated) return reply.redirect("/");
+        console.log(request.auth.credentials);
+    	request.auth.session.set(request.auth.credentials.token);
+    	return reply.redirect("/");
     }
 });
 
