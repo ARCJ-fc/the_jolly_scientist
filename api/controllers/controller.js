@@ -3,7 +3,6 @@ var Bell 	= require("bell");
 var Boom 	= require("boom");
 var model 	= require("../models/model.js");
 
-var User 	= model.User;
 var Post 	= model.Post;
 
 
@@ -20,7 +19,14 @@ exports.login = {
 		strategy: "google"
 	},
 	handler: function(request, reply) {
-		request.auth.session.set(request.auth.credentials.token);
+		var g = request.auth.credentials;
+        var profile = {
+            name: g.profile.displayName,
+            email: g.profile.email,
+            picture: g.profile.raw.picture,
+            gender: g.profile.raw.gender
+        }
+        request.auth.session.set(profile);
     	return reply.redirect("/");
 	}
 };
@@ -44,16 +50,15 @@ exports.getPosts = {
 exports.createPost = {
 	auth: "session",
 	handler: function(request, reply) {
-		// Post.save(function(err, contents) {
-		// 	if (err) {
-		// 		if (err.code === 11000 || err.code === 11001) {
-  //                   return reply(Boom.forbidden("please provide another user email"));
-  //               }
-  //               return reply(Boom.forbidden(err));
-		// 	}
-		// 	return reply(contents).code(201);
-		// })
-	reply("hi");
+		 Post.savePost(request.payload, function(err, contents) {
+		 	if (err) {
+		 		if (err.code === 11000 || err.code === 11001) {
+                     return reply(Boom.forbidden("please provide another title or different content"));
+                 }
+                 return reply(Boom.forbidden(err));
+		 	}
+		 	return reply(contents).code(201);
+		 });
 	},
 	validate: {
 		payload: Joi.object({
