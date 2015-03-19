@@ -36,3 +36,27 @@ POST TO LOGIN --> ROUTER --> VALIDATION --> QUERY MONGODB FOR USERNAME --> IF SU
 
 /LOGOUT
 GET TO LOGOUT --> ROUTER --> [AUTHENTICATION] --> IF SUCCESSFUL AUTHENTICATION, DELETE USER SESSION AND REDIRECT TO HOMEPAGE, PERHAPS WITH SUCCESSFUL LOGOUT
+/ --------------
+
+/api
+	/controllers
+		controller.js
+	/model
+		model.js
+	/routes
+		routes.js
+	config.js
+	database.js
+	server.js
+/views
+/test
+	/controllers
+		controller.js
+	/model
+		model.js
+	/routes
+		routes.js
+	config.js
+	database.js
+	server.js
+app.js
