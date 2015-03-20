@@ -1,11 +1,8 @@
 var Joi 	= require("joi");
 var Bell 	= require("bell");
 var Boom 	= require("boom");
+var path 	= require("path");
 var model 	= require("../models/model.js");
-
-var Post 	= model.Post;
-
-
 
 exports.home = {
 	handler: function(request, reply) {
@@ -15,7 +12,6 @@ exports.home = {
 
 exports.login = {
 	auth: {
-		mode: "try",
 		strategy: "google"
 	},
 	handler: function(request, reply) {
@@ -43,9 +39,9 @@ exports.logout = {
 
 exports.getPosts = {
 	handler: function(request, reply) {
-		Post.find({}, function(err, post) {
-			if (err) return handleError(err);
-			return reply(post);
+		model.getPosts(function(err, contents) {
+			if (err) return reply(err);
+			return reply(contents);
 		});
 	}
 };
@@ -53,15 +49,16 @@ exports.getPosts = {
 exports.createPost = {
 	auth: "session",
 	handler: function(request, reply) {
-		 Post.savePost(request.payload, function(err, contents) {
+		request.payload.author = request.auth.credentials.name;
+		model.createPost(request.payload, function(err, contents) {
 		 	if (err) {
 		 		if (err.code === 11000 || err.code === 11001) {
-                     return reply(Boom.forbidden("please provide another title or different content"));
-                 }
-                 return reply(Boom.forbidden(err));
+                    return reply(Boom.forbidden("please provide another title or different content"));
+                }
+                return reply(Boom.forbidden(err));
 		 	}
 		 	return reply(contents).code(201);
-		 });
+		});
 	},
 	validate: {
 		payload: Joi.object({
@@ -75,14 +72,21 @@ exports.createPost = {
 
 exports.getSinglePost = {
 	handler: function(request, reply) {
-		reply("singlePost");
+		model.getSinglePost(request.params.title, function(err, contents) {
+			if (err) return reply(err);
+			return reply(contents);
+		});
 	}
 };
 
 exports.updateSinglePost = {
 	auth: "session",
 	handler: function(request, reply) {
-		reply("updateSinglePost");
+		var user = request.auth.credentials.name;
+		model.updateSinglePost(request.payload, user, function(err, contents) {
+			if (err) return reply(err);
+			return reply(contents);
+		});
 	},
 	validate: {
 		payload: Joi.object({
@@ -95,7 +99,11 @@ exports.updateSinglePost = {
 exports.deleteSinglePost = {
 	auth: "session",
 	handler: function(request, reply) {
-		reply("deleteSinglePost");
+		var user = request.auth.credentials.name;
+		model.deleteSinglePost(request.params.title, user, function(err, contents) {
+			if (err) return reply(err);
+			return reply(contents);
+		});
 	}
 };
 
@@ -123,13 +131,22 @@ exports.createUser = {
 
 exports.getSingleUser = {
 	handler: function(request, reply) {
+	model.getSingleUser(request.params.name, function(err, contents) {
+			if (err) return reply(err);
+			return reply(contents);
+		});
 	}
 };
 
 exports.updateSingleUser = {
 	auth: "session",
 	handler: function(request, reply) {
-		reply("updateSingleUser");
+		var user = request.auth.credentials.name;
+		request.payload.name = request.params.name;
+		model.updateSingleUser(request.payload, user, function(err, contents) {
+			if (err) return reply(err);
+			return reply(contents);
+		});
 	},
 	validate: {
 		payload: Joi.object({
@@ -141,6 +158,18 @@ exports.updateSingleUser = {
 exports.deleteSingleUser = {
 	auth: "session",
 	handler: function(request, reply) {
-		reply("deleteSingleUser");
+		var user = request.auth.credentials.name;
+		model.deleteSinglePost(request.params.name, user, function(err, contents) {
+			if (err) return reply(err);
+			return reply(contents);
+		});
+	}
+};
+
+exports.testPosting = {
+	auth: "session",
+	handler: function(request, reply) {
+		var root = path.resolve(__dirname + "/../../");
+		reply.file(root + "/views/index.html");
 	}
 };
