@@ -1,7 +1,9 @@
 var mongoose = require("mongoose");
+var bcrypt   = require('bcrypt');
+var SALT_WORK_FACTOR = 10;
 
 var User = mongoose.Schema({
-    Username    : { type: String, unique: true },
+    username    : { type: String, unique: true },
     password    : { type: String },
     name        : { type: String },
     description : { type: String }
@@ -106,3 +108,58 @@ exports.deleteSingleUser = function(singleUserName, user, callback) {
         blogPost.remove({name: singleUserName}, callback);
     });
 };
+
+// *** Authentication stuff:
+// Commenting out for now just to avoid errors while trying to make tests
+/////=====//////==========//////=========/////=========/////
+//loging in
+
+// User.pre('save', function(next){
+//     var user = this;
+
+//     if (!user.isModified('password')) return next();
+
+//     //make it salty ;)
+//     bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt){
+//         if (err) return next(err);
+
+//         //get hashing
+//         bcrypt.hash(user.password, salt, function(err, hash){
+//             if (err) return next(err);
+
+//             user.password = hash;
+//             next();
+//         });
+//     });
+// });
+
+// User.methods.comparePassword = function(candidatePassword, callback){
+//     bcrypt.compare(candidatePassword, this.password, function(err, isMatch){
+//         if (err) return callback(err);
+//         callback(null, isMatch);
+//     });
+// };
+
+// //usage
+// var testUser = new User({
+//     username: "arcj",
+//     password: "we-are-arcj"
+// });
+
+// testUser.save(function(err){
+//     if (err) throw err;
+// });
+
+// User.findOne({ username: "arcj"}, function(err, user){
+//     if (err) throw err;
+
+//     user.comparePassword('we-are-arcj', function(err, isMatch){
+//         if (err) throw err;
+//         console.log("we-are-arcj:", isMatch);
+//     });
+
+//     user.comparePassword("we-are-fac4", function(err, isMatch){
+//         if (err) throw err;
+//         console.log("we-are-fac4:", isMatch);
+//     });
+// });
