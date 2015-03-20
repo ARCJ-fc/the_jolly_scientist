@@ -15,7 +15,7 @@ server.register([Bell, cookie, {
 	    opsInterval: 1000,
 	    reporters: [{
 	        reporter: require("good-console"),
-	        args:[{ log: "*", response: "*", error: "*" }]
+	        args:[{ log: "*", error: "*" }]
 	    }, {
 	        reporter: require("good-file"),
 	        args: [__dirname + "/../test/fixtures/the_log", { error: "*", log: "*", response: "*"}]
