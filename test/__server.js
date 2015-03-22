@@ -55,7 +55,7 @@ lab.experiment("Authentication logic tests: ", function() {
     lab.test("GETting to the logout page if not already logged in ", function(done) {
 
         var options = {
-            url: "/login",
+            url: "/logout",
             method: "GET"
         };
 
@@ -70,7 +70,7 @@ lab.experiment("Authentication logic tests: ", function() {
     lab.test("GETting to the logout page if already logged in ", function(done) {
 
         var options = {
-            url: "/login",
+            url: "/logout",
             method: "GET",
             credentials: {
             	profile: {
@@ -87,7 +87,7 @@ lab.experiment("Authentication logic tests: ", function() {
         server.inject(options, function(response) {
         	console.log(response.auth, response.headers);
             assert.equal(response.statusCode, 302, "should return a status code of 302");
-            assert.isBelow(response.headers["set-cookie"][0], 50, "should wipe the user's cookie");
+            assert.equal(response.headers["set-cookie"][0], "arcjcookie=;", "should wipe the user's cookie");
             assert.equal(response.headers.location, "/", "should redirect user to home page");
             done();
         });
